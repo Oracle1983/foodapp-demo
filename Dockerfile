@@ -15,7 +15,7 @@ COPY requirements.txt $WORK_DIR/requirements.txt
 RUN python3 -m pip install -r requirements.txt
 
 COPY src/ $WORK_DIR/src
-COPY model/ $WORK_DIR/src
+COPY model/ $WORK_DIR/model
 
 EXPOSE 8000
 

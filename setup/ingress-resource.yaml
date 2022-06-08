@@ -1,19 +1,23 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: resnet-ingress
+  name: foodapp-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
-  namespace: resnet
+  namespace: foodapp
 spec:
+  defaultBackend:
+    service:
+      name: foodapp-service-nodeport
+      port:
+        number: 80
   rules:
-    - host: resnet-demo.com
+    - host: foodapp-demo.com
       http:
         paths:
-          - path: /predict
+          - path: /
             pathType: Prefix
             backend:
               service:
-                name: resnet-service-nodeport
+                name: foodapp-service-nodeport
                 port:
                   number: 80

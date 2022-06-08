@@ -2,51 +2,51 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: resnet-service
-  namespace: resnet
+  name: foodapp-service
+  namespace: foodapp
   labels:
-    app: resnet
+    app: foodapp
 spec:
   type: LoadBalancer
   ports:
     - name: 80-tcp
       port: 80
       protocol: TCP
-      targetPort: 8501
+      targetPort: 8000
   selector:
-    app : resnet
+    app : foodapp
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: resnet-service-nodeport
-  namespace: resnet
+  name: foodapp-service-nodeport
+  namespace: foodapp
 spec:
   type: NodePort
   ports:
   - port: 80
-    targetPort: 8501
+    targetPort: 8000
     protocol: TCP
     name: http
   - port: 443
-    targetPort: 8501
+    targetPort: 8000
     protocol: TCP
     name: https
   selector:
-    app: resnet
+    app: foodapp
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app : resnet
-  name: resnet-deployment
-  namespace: resnet
+    app : foodapp
+  name: foodapp-deployment
+  namespace: foodapp
 spec:
-  replicas: 1
+  replicas: 6
   selector:
     matchLabels:
-      app: resnet
+      app: foodapp
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -55,29 +55,29 @@ spec:
   template:
     metadata:
       labels:
-        app: resnet
+        app: foodapp
     spec:
       containers:
-        - image: oracle83/resnet-demo:v5
-          name: resnet-container
+        - image: oracle83/foodapp-demo:v1
+          name: foodapp-container
           ports:
-            - containerPort: 8501
+            - containerPort: 8000
               protocol: TCP
           resources: {}
           imagePullPolicy: IfNotPresent
           readinessProbe:
             tcpSocket:
-              port: 8501
+              port: 8000
             initialDelaySeconds: 5
             periodSeconds: 5
           livenessProbe:
             tcpSocket:
-              port: 8501
+              port: 8000
             initialDelaySeconds: 15
             periodSeconds: 20
-      tolerations:
-      - effect: NoSchedule
-        key: eks.amazonaws.com/compute-type
-        operator: Equal
-        value: fargate
+      # tolerations:
+      # - effect: NoSchedule
+      #   key: eks.amazonaws.com/compute-type
+      #   operator: Equal
+      #   value: fargate
       restartPolicy: Always
