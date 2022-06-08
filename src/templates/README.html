@@ -1,0 +1,38 @@
+<h1> Week 7: Deployment </h1>
+
+The goal for this week is to serve the model through a web application at http://your-username.aiap5.okdapp.tekong.aisingapore.net such that you can upload an image of some food and obtain its prediction. This involves understanding web serving, web-based apps, HTTP, containerisation and CI/CD. We'll also make you write test cases, implement logging and write documentation.
+
+<h2> 1. How the model is trained </h2>
+
+The model is a VGG16 architecture with weights pretrained on the ImageNet dataset. This model, which was downloaded from TensorFlow Hub, was then trained on the TensorFood dataset using the categorical cross entropy loss function. During training we froze all the layers except the last 3. We used the Adam optimiser with a learning rate of 0.001 and trained for 10 epochs with a batch size of 32.
+
+<h2> 2. The expected format the model requires </h2>
+
+You may unload any images in various formats such as jpg or png and in any size (with 3 channels), of food belonging to the TensorFood dataset classes.
+
+<h2> 3. Details about the dataset with which the model was trained </h2>
+ The TensorFood dataset comprises of 12 Singaporean food: 🦀chilli crab, 🥟curry puff, 🍤dim sum, 🍧ice kacang, 🥪kaya toast, 🍚nasi ayam, 🌯popiah, 🥞roti prata, 🐠sambal stingray, 🍢satay, 🍵tau huay or 🍜wanton noodle, with about 100 images each.
+
+<h2> 4. Performance of the model </h2>
+Test Evaluation of model:
+<li> Test acc: 0.9826 (Val: 0.9731)
+<li> Test precision: 0.9397 (Val: 0.8571)
+<li> Test recall: 0.8450 (Val: 0.8125)
+
+<h2> 5. How the model is served </h2>
+<li> The mode is hosted as a simple web application on http://kumhongtham.aiap5.okdapp.tekong.aisingapore.net/.
+<li> The application allows users to upload a image via the 'Choose File' button.
+<li> Once the image is uploaded successfully, the image will be displayed.
+<li> The user can proceed with a request to predict the image via the 'Classify' button.
+<li> The results of the model's prediction are displayed on the right hand side of the image, with the predicted class and probability.
+<li> Do note that results will only show for predictions above 0.85 as wrongly predicted results may lower users' confidence in using this model and also minimize/avoid the situation where the model predicts an image of a human, for example, as a food class xD
+
+<h2> 6. CI/CD Pipeline </h2>
+<li> A CI/CD pipeline helps you automate steps in your software delivery process, such as initiating code builds, running automated tests, and deploying to a staging or production environment. Automated pipelines remove manual errors, provide standardized development feedback loops and enable fast product iterations.
+<li> CI, short for Continuous Integration, is a software development practice in which all developers merge code changes in a central repository multiple times a day. CD stands for Continuous Delivery, which on top of Continuous Integration adds the practice of automating the entire software release process.
+<li> With CI, each change in code triggers an automated build-and-test sequence for the given project, providing feedback to the developer(s) who made the change. The entire CI feedback loop should run in less than 10 minutes.
+Continuous Delivery includes infrastructure provisioning and deployment, which may be manual and consist of multiple stages. What’s important is that all these processes are fully automated, with each run fully logged and visible to the entire team.
+<img src="diagram.png"></img>
+
+
+

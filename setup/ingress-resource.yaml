@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: resnet-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  namespace: resnet
+spec:
+  rules:
+    - host: resnet-demo.com
+      http:
+        paths:
+          - path: /predict
+            pathType: Prefix
+            backend:
+              service:
+                name: resnet-service-nodeport
+                port:
+                  number: 80

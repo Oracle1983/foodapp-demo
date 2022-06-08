@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TensorFood</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/favicon.ico">
+</head>
+
+<body>
+    <div id="app" class="container">
+        <h1>TensorFood</h1>
+        <h4>About the model</h4>
+        <div class="app-div">
+            <p>The model is a VGG16 architecture with weights pretrained on
+                the ImageNet dataset. This model, which was downloaded from TensorFlow Hub, was
+                then trained on the TensorFood dataset using the categorical cross entropy
+                loss function. This dataset consists of 12 classes of food.</p>
+            <p>During training we froze all the layers except the last 3. We used the Adam
+                optimiser with a learning rate of 0.001 and trained for 10 epochs with a
+                batch size of 32. The validation accuracy we achieved at the end of the
+                training was 95%.
+            </p>
+            <p>You may unload any images in various formats such as jpg or png and in any size,
+                of food belonging to the TensorFood dataset classes:
+                ['chilli_crab','curry_puff','dim_sum','ice_kacang','kaya_toast','nasi_ayam',
+                'popiah','roti_prata','sambal_stingray','satay','tau_huay','wanton_noodle'].
+            </p>
+        </div>
+        <h4>Try it out!</h4>
+        <div class="row">
+            <div class="col-6">
+                <h6>Upload image</h6>
+                <img v-if="imageURL" :src="imageURL" class="img-fluid">
+                <input type="file" @change="onFileChanged"><br>
+                <button @click="onUpload" v-if="imageURL && !results">Classify</button>
+                <p v-if="imageURL && !results">Note: Prediction will take some time if model is loaded
+                    for the first time.
+                </p>
+            </div>
+            <div v-if="results" class="col-6">
+                <h6>Prediction</h6>
+                <p><span v-html="results.food.replace(/_/g,' ')"></span></p>
+                <p>Probability: <span v-html="results.probability.toPrecision(2)"></span></p>
+            </div>
+            <div v-if="errorMessage" class="col-6">
+                <h6>Error</h6>
+                <p><span v-html="errorMessage"></span>!</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                selectedFile: null,
+                imageURL: null,
+                results: "",
+                errorMessage: ""
+            }
+        },
+        methods: {
+            onFileChanged(event) {
+                this.selectedFile = event.target.files[0];
+                this.imageURL = URL.createObjectURL(this.selectedFile);
+                this.results = "";
+            },
+            onUpload() {
+                let vm = this;
+                const formData = new FormData()
+                formData.append('file', this.selectedFile, this.selectedFile.name)
+                axios.post('predict', formData)
+                    .then(function (response) {
+                        vm.results = response.data;
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        vm.errorMessage = error.response.data.error_message;
+                        console.log(error.response.data);
+                    });
+            }
+        }
+    })
+</script>
+
+<style>
+    body {
+        padding: 32px;
+        background-color: #F8F8F8;
+        color: #383838;
+    }
+
+    h1,
+    h4,
+    button,
+    .app-div {
+        margin-top: 16px;
+    }
+</style>
+
+</html>
