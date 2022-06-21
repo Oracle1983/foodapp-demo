@@ -103,7 +103,7 @@ class Inference():
 
         # Guard cases where pred proba is too low or predictions may
         # not make sense
-        if pred_proba < 0.85:
+        if pred_proba < 0.80:
             pred_class = "I'm not certain what food this is. Sorry =p"
 
         print('Prediction')
