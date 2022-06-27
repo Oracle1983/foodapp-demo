@@ -4,6 +4,14 @@ steps:
   id: Test
   entrypoint: python
   args:
+  - 'python3'
+  - '-m'
+  - 'pip'
+  - 'install'
+  - '-r'
+  - 'requirements'
+  - '&&'
+  - 'python'
   - './src/app.py'
 
 # This step builds the container image
