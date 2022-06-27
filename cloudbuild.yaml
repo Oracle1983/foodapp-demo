@@ -1,6 +1,6 @@
 steps:
 # This step runs the unit tests on the app
-- name: 'app runs'
+- name: 'tensorflow/tensorflow:latest'
   id: Test
   entrypoint: python
   args:
