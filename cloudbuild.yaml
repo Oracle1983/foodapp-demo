@@ -14,13 +14,15 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   id: Build
   args:
-  - |
-    build -t asia-southeast1-docker.pkg.dev/$PROJECT_ID/mlops-repository/cloudbuild-foodapp:$SHORT_SHA .
+  - 'build'
+  - '-t'
+  - 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/mlops-repository/cloudbuild-foodapp:$SHORT_SHA'
+  - '.'
 
 # This step pushes the image to Artifact Registry
 # The PROJECT_ID and SHORT_SHA variables are automatically replaced by Cloud Build
 - name: 'gcr.io/cloud-builders/docker'
   id: Push
   args:
-  - |
-    push asia-southeast1-docker.pkg.dev/$PROJECT_ID/mlops-repository/cloudbuild-foodapp:$SHORT_SHA
+  - 'push'
+  - 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/mlops-repository/cloudbuild-foodapp:$SHORT_SHA'
