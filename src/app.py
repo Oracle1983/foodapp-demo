@@ -1,4 +1,5 @@
 # pylint: disable=E0401, W0611
+from genericpath import exists
 import logging
 from flask import Flask, jsonify, request, render_template
 from waitress import serve
@@ -83,14 +84,13 @@ class Inference():
 
         return input_data
 
-    def predict_image(self, model, input_data):
+    def predict_image(self, input_data):
         """
         Predicts the image uploaded.
 
         Arguments:
-            model {model} -- model initiated in app
-            input_data {array}
-            A normalised array of shape (-1, img_height, img_width, 3)
+            input_data -- {array} A normalised array of shape
+            (-1, img_height, img_width, 3)
 
         Returns:
             pred_class -- {str} predicted class
@@ -128,7 +128,7 @@ UPLOAD_FOLDER = './uploads'
 
 app = Flask(__name__, template_folder='templates')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-os.makedirs('./uploads')
+os.makedirs('./uploads', exist_ok=True)
 
 inf = Inference()
 model = inf.init_model()
@@ -157,11 +157,13 @@ def readme():
 def predict():
     if request.method == 'POST':
         file = request.files['file']
+        # Validate file input
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
+        # Load validated file locally to prevent ingestion of malicious files
         input_data = inf.process_image(filepath)
-        pred_class, pred_proba = inf.predict_image(model, input_data)
+        pred_class, pred_proba = inf.predict_image(input_data)
 
     return jsonify({'food': pred_class, 'probability': pred_proba})
 
