@@ -1,5 +1,5 @@
 # Add a line here to specify the docker image to inherit from.
-FROM tensorflow/tensorflow:latest
+FROM tensorflow/tensorflow:2.8.2
 
 USER root
 
@@ -10,8 +10,7 @@ WORKDIR $WORK_DIR
 # any other files you need in the image (like the saved model).
 COPY requirements.txt $WORK_DIR/requirements.txt
 
-# Add a line here to update the conda environment using the conda.yml.
-# Remember to specify that the environment to update is 'polyaxon'.
+# Install libraries and dependencies required
 RUN python3 -m pip install -r requirements.txt
 
 COPY src/ $WORK_DIR/src
